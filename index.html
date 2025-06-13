@@ -23,7 +23,7 @@
 </h2>
 <h2 style="animation: flash 0.5s infinite;">BALLMER WOOOOOOO!!!!</h2><style>@keyframes flash{0%,100%{opacity:1}50%{opacity:0}}</style>
 
-<video autoplay loop controls>
+<video id="myVideo" autoplay loop controls>
   <source src="ballmer.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -35,11 +35,21 @@
 
 <h2> TEST TEST TEST TESTING IN OLES PISS PRODUCTION AHAHAHAHAHAH ! !  ! ! !</h2>
 
-  <audio controls>
+  <audio id="myAudio" controls>
   <source src="oles_dave_ballmer.mp3" type="audio/mp3">
   Your browser does not support the audio element.
 </audio>
 <p>This is Oles Ballmer story where balls were dropped</p>
 
+<script>
+  const audio = document.getElementById('myAudio');
+  const video = document.getElementById('myVideo');
+
+  audio.addEventListener('play', function() {
+    if (!video.paused) {
+      video.pause();
+    }
+  });
+</script>
 
 </html>
