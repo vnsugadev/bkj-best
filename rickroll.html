@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Autoplay Check</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+    .prompt {
+      text-align: center;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      background: #ffc107;
+      border: none;
+      border-radius: 10px;
+    }
+    .rickroll-container {
+      background-color: yellow;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .flash {
+      animation: flash 1s infinite;
+      font-size: 4rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+    @keyframes flash {
+      0%, 100% { color: red; }
+      50% { color: blue; }
+    }
+    video {
+      max-width: 90%;
+      max-height: 70vh;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="prompt" id="prompt" style="display: none;">
+  <p>You are entering Rickroll!</p>
+  <button onclick="startRickroll()">RICKROLL ME NOW!</button>
+</div>
+
+<script>
+  async function testAutoplay() {
+    const video = document.createElement('video');
+    video.src = 'rickroll.mp4';
+    video.autoplay = true;
+    video.playsInline = true;
+    video.controls = false;
+    video.muted = false;
+
+    return new Promise((resolve) => {
+      video.onplay = () => resolve(true);
+      video.onerror = () => resolve(false);
+      video.play().then(() => resolve(true)).catch(() => resolve(false));
+    });
+  }
+
+  async function init() {
+    const supported = await testAutoplay();
+
+    if (supported) {
+      startRickroll(); // autoplay with sound worked
+    } else {
+      document.getElementById('prompt').style.display = 'block';
+    }
+  }
+
+  function startRickroll() {
+document.body.innerHTML = `
+  <body bgcolor="yellow>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    .rickroll-title {
+      font-family: 'Fredoka One', sans-serif;
+      font-size: 6rem;
+      background: linear-gradient(90deg, red, orange, green, blue, blue, indigo, violet);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      letter-spacing: 1rem;
+      margin: 0;
+    }
+  </style>
+
+  <div class="rickroll-container">
+    <h1 class="rickroll-title">RICKROLL</h1>
+    <p style="font-style: italic; color: black; text-align: center; margin-top: 10px;">
+      I told you it was a Rickroll.
+    </p>
+    <video src="rickroll.mp4" autoplay controls playsinline></video>
+  </div>
+`;
+
+    const video = document.querySelector('video');
+    video.play().catch(err => {
+      alert("Failed to autoplay. Please click play manually.");
+    });
+  }
+
+  init();
+</script>
+
+</body>
+</html>
