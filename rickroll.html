@@ -59,23 +59,33 @@
 </div>
 
 <script>
+  let testVideo = null;
+
   async function testAutoplay() {
-    const video = document.createElement('video');
-    video.src = 'rickroll.mp4';
-    video.autoplay = true;
-    video.playsInline = true;
-    video.controls = false;
-    video.muted = false;
+    testVideo = document.createElement('video');
+    testVideo.src = 'rickroll.mp4';
+    testVideo.autoplay = true;
+    testVideo.playsInline = true;
+    testVideo.controls = false;
+    testVideo.muted = false;
 
     return new Promise((resolve) => {
-      video.onplay = () => resolve(true);
-      video.onerror = () => resolve(false);
-      video.play().then(() => resolve(true)).catch(() => resolve(false));
+      testVideo.onplay = () => resolve(true);
+      testVideo.onerror = () => resolve(false);
+      testVideo.play().then(() => resolve(true)).catch(() => resolve(false));
     });
   }
 
   async function init() {
     const supported = await testAutoplay();
+
+    // Remove the test video from memory/DOM if it exists
+    if (testVideo) {
+      testVideo.pause();
+      testVideo.src = '';
+      testVideo.load();
+      testVideo = null;
+    }
 
     if (supported) {
       startRickroll(); // autoplay with sound worked
@@ -85,30 +95,29 @@
   }
 
   function startRickroll() {
-document.body.innerHTML = `
-  <body bgcolor="yellow>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-  <style>
-    .rickroll-title {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 6rem;
-      background: linear-gradient(90deg, red, orange, green, blue, blue, indigo, violet);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
-      letter-spacing: 1rem;
-      margin: 0;
-    }
-  </style>
+    document.body.innerHTML = `
+      <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+      <style>
+        .rickroll-title {
+          font-family: 'Fredoka One', sans-serif;
+          font-size: 6rem;
+          background: linear-gradient(90deg, red, orange, green, blue, blue, indigo, violet);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-align: center;
+          letter-spacing: 1rem;
+          margin: 0;
+        }
+      </style>
 
-  <div class="rickroll-container">
-    <h1 class="rickroll-title">RICKROLL</h1>
-    <p style="font-style: italic; color: black; text-align: center; margin-top: 10px;">
-      I told you it was a Rickroll.
-    </p>
-    <video src="rickroll.mp4" autoplay controls playsinline></video>
-  </div>
-`;
+      <div class="rickroll-container">
+        <h1 class="rickroll-title">RICKROLL</h1>
+        <p style="font-style: italic; color: black; text-align: center; margin-top: 10px;">
+          I told you it was a Rickroll.
+        </p>
+        <video src="rickroll.mp4" autoplay controls playsinline></video>
+      </div>
+    `;
 
     const video = document.querySelector('video');
     video.play().catch(err => {
@@ -118,6 +127,7 @@ document.body.innerHTML = `
 
   init();
 </script>
+
 
 </body>
 </html>
