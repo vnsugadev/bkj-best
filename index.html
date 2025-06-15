@@ -30,6 +30,11 @@
   Your browser does not support the video tag.
 </video>
 
+  <video id="myVideo1" autoplay loop controls>
+  <source src="ballmer_WIL.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 <h2><marquee scrollamount="40">WELCOME TO BALLMER OLES BEST</marquee></h2>
 
 
@@ -46,10 +51,15 @@
 <script>
   const audio = document.getElementById('myAudio');
   const video = document.getElementById('myVideo');
+  const video1 = document.getElementById('myVideo1');
+
 
   audio.addEventListener('play', function() {
     if (!video.paused) {
       video.pause();
+    }
+      if (!video1.paused) {
+      video1.pause();
     }
   });
 </script>
