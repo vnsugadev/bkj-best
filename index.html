@@ -20,6 +20,38 @@
   text-decoration: none;
   animation: rainbow-flash 1s infinite;
 }
+
+
+    /* Basic popup styles */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background-color: white;
+      border: 2px solid #444;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    #popup.show {
+      display: block;
+    }
+    #popup button {
+      margin-top: 10px;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+    #overlay.show {
+      display: block;
+    }
 </style>
 </head>
 
@@ -71,6 +103,15 @@
 </audio>
 <p>This is Oles Ballmer story where balls were dropped</p>
 
+
+  <div id="overlay"></div>
+  <div id="popup">
+    <p>Audio finished playing!</p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+
+
+  
 <script>
   const audio = document.getElementById('myAudio');
   const video = document.getElementById('myVideo');
@@ -85,6 +126,21 @@
       video1.pause();
     }
   });
+
+
+    const audio = document.getElementById('myAudio');
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('overlay');
+
+    audio.addEventListener('ended', () => {
+      popup.classList.add('show');
+      overlay.classList.add('show');
+    });
+
+    function closePopup() {
+      popup.classList.remove('show');
+      overlay.classList.remove('show');
+    }
 </script>
 
 </html>
