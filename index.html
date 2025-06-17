@@ -113,34 +113,36 @@
 
   
 <script>
+<script>
+  // Declare everything only once
   const audio = document.getElementById('myAudio');
   const video = document.getElementById('myVideo');
   const video1 = document.getElementById('myVideo1');
+  const popup = document.getElementById('popup');
+  const overlay = document.getElementById('overlay');
 
-
-  audio.addEventListener('play', function() {
+  // Pause videos when audio plays
+  audio.addEventListener('play', function () {
     if (!video.paused) {
       video.pause();
     }
-      if (!video1.paused) {
+    if (!video1.paused) {
       video1.pause();
     }
   });
 
+  // Show popup when audio ends
+  audio.addEventListener('ended', () => {
+    popup.classList.add('show');
+    overlay.classList.add('show');
+  });
 
-    const audio = document.getElementById('myAudio');
-    const popup = document.getElementById('popup');
-    const overlay = document.getElementById('overlay');
+  function closePopup() {
+    popup.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+</script>
 
-    audio.addEventListener('ended', () => {
-      popup.classList.add('show');
-      overlay.classList.add('show');
-    });
-
-    function closePopup() {
-      popup.classList.remove('show');
-      overlay.classList.remove('show');
-    }
 </script>
 
 </html>
