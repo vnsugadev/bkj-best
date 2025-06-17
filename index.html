@@ -104,13 +104,11 @@
 <p>This is Oles Ballmer story where balls were dropped</p>
 
 
-  <div id="overlay"></div>
-  <div id="popup">
-    <p>I cannot believe you listened to my dumb story, you must be curious or just bored lol anyways if you got cool ideas to make more shit pls do contact me I genuinely will appreicate it, any dumb idea I'll put it in the site :D  </p>
-    <button onclick="closePopup()">Close</button>
-  </div>
+<div id="overlay"></div>
 <div id="popup">
-  <p>Hi Testing 123</p>
+  <p>
+    I cannot believe you listened to my dumb story, you must be curious or just bored lol anyways if you got cool ideas to make more shit pls do contact me I genuinely will appreciate it, any dumb idea I'll put it in the site :D  
+  </p>
   <button id="closeBtn">Close</button>
 </div>
 
@@ -118,40 +116,37 @@
   
 
 <script>
-const audio = document.getElementById('myAudio');
-const video = document.getElementById('myVideo');
-const video1 = document.getElementById('myVideo1');
-const popup = document.getElementById('popup');
-const overlay = document.getElementById('overlay');
+  const audio = document.getElementById('myAudio');
+  const video = document.getElementById('myVideo');
+  const video1 = document.getElementById('myVideo1');
+  const popup = document.getElementById('popup');
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.getElementById('closeBtn');
 
-// Pause videos when audio plays
-audio.addEventListener('play', function () {
-  if (!video.paused) {
-    video.pause();
+  // Pause videos when audio plays
+  audio.addEventListener('play', function () {
+    if (!video.paused) video.pause();
+    if (!video1.paused) video1.pause();
+  });
+
+  // Show popup when audio ends, but only if first visit
+  audio.addEventListener('ended', () => {
+    if (!localStorage.getItem('visited')) {
+      popup.classList.add('show');
+      overlay.classList.add('show');
+      localStorage.setItem('visited', 'true');
+    }
+  });
+
+  // Function to close popup and overlay
+  function closePopup() {
+    popup.classList.remove('show');
+    overlay.classList.remove('show');
   }
-  if (!video1.paused) {
-    video1.pause();
-  }
-});
 
-// Show popup when audio ends, but only if first visit
-audio.addEventListener('ended', () => {
-  if (!localStorage.getItem('visited')) {
-    popup.classList.add('show');
-    overlay.classList.add('show');
-    localStorage.setItem('visited', 'true');
-  }
-});
-
-// Function to close popup and overlay
-function closePopup() {
-  popup.classList.remove('show');
-  overlay.classList.remove('show');
-}
-
-// Attach close event listeners to close button and overlay (assuming you have these elements)
-document.getElementById('closeBtn').addEventListener('click', closePopup);
-overlay.addEventListener('click', closePopup);
+  // Close popup on button or overlay click
+  closeBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', closePopup);
 
 </script>
 
