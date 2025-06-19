@@ -58,6 +58,16 @@
       Your browser does not support the audio element.
     </audio>
   </div>
+      <div class="audio-container">
+    <div class="audio-title">Shutterstoq Museq 2</div>
+          <h3 id="audio-desc1" style="display: none;">
+    This is the original ad meme music I have been using for ages, RTA Best voice over also uses this
+  </h3>
+    <audio id="audio-descL" controls>
+      <source src="508574_positive-corporate-vibes_preview.mp3" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
   
   
   <div class="audio-container">
@@ -74,6 +84,8 @@
   <script>
   const audio = document.getElementById('calming-audio');
   const desc = document.getElementById('audio-desc');
+  const audio1 = document.getElementById('audio-descL');
+  const desc1 = document.getElementById('audio-desc1');
 
   audio.addEventListener('play', () => {
     desc.style.display = 'block';
@@ -81,6 +93,14 @@
 
   audio.addEventListener('pause', () => {
     desc.style.display = 'none';
+  });
+
+      audio1.addEventListener('play', () => {
+    desc1.style.display = 'block';
+  });
+
+  audio1.addEventListener('pause', () => {
+    desc1.style.display = 'none';
   });
 </script>
 
