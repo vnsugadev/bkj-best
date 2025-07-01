@@ -97,6 +97,16 @@
 
 <hr style="border: none; border-top: 2px solid black; width: 100%;">
 
+<h1> Price of Gold </h1>
+
+<h2 id="gold-price">Loading...</h2>
+
+
+
+
+<hr style="border: none; border-top: 2px solid black; width: 100%;">
+
+
 
 <h2><marquee scrollamount="60">POWERED BY GGA MAUR & SWISSCOM</marquee></h2>
 
@@ -160,6 +170,18 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     popup.classList.remove('show');
     overlay.classList.remove('show');
   }
+
+
+    fetch('https://api.gold-api.com/price/XAU')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('gold-price').textContent = data.price;
+      })
+      .catch(error => {
+        document.getElementById('gold-price').textContent = 'Error loading price';
+        console.error(error);
+      });
+
 </script>
 
 
