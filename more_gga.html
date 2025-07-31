@@ -14,7 +14,7 @@
       text-align: center;
     }
 
-    .audio-container {
+    .audio-container, .video-container {
       background: white;
       border: 2px solid #ccc;
       padding: 10px;
@@ -23,9 +23,14 @@
       border-radius: 10px;
     }
 
-    .audio-title {
+    .audio-title, .video-title {
       font-weight: bold;
       margin-bottom: 5px;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -41,7 +46,8 @@
       Your browser does not support the audio element.
     </audio>
   </div>
-    <div class="audio-container">
+
+  <div class="audio-container">
     <div class="audio-title">Various TTS's and other extract of the GGA Maur Genau Mit Eus's</div>
     <audio controls>
       <source src="ggashit_2L5oWkeP.mp3" type="audio/mpeg">
@@ -49,9 +55,6 @@
     </audio>
   </div>
 
-
-  
-  
   <div class="audio-container">
     <div class="audio-title">Nothing here</div>
     <audio controls>
@@ -60,9 +63,14 @@
     </audio>
   </div>
 
-  <!-- Add more audio blocks below as needed -->
+  <!-- Example video entry -->
+  <div class="video-container">
+    <div class="video-title">the Etishit 3 2 1 clip i made lol</div>
+    <video controls>
+      <source src="etishit.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
 </body>
-
-
 </html>
