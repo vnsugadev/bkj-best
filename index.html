@@ -277,7 +277,7 @@
         <button class="call-button decline-button" onclick="declineCall()">✖</button>
         <div class="button-label">Decline</div>
       </div>
-      <div style="text-align: center;">
+      <div id="acceptButtonContainer" style="text-align: center;">
         <button class="call-button accept-button" onclick="acceptCall()">✓</button>
         <div class="button-label">Accept</div>
       </div>
@@ -393,7 +393,7 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     });
     
     // Hide accept button, keep popup and decline button visible
-    const acceptButtonContainer = document.querySelector('.call-buttons > div:nth-child(2)');
+    const acceptButtonContainer = document.getElementById('acceptButtonContainer');
     if (acceptButtonContainer) {
       acceptButtonContainer.style.display = 'none';
     }
