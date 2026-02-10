@@ -72,6 +72,8 @@
     }
     #incomingCallPopup.show {
       display: block;
+    }
+    #incomingCallPopup.vibrating {
       animation: phoneVibrate 0.5s infinite;
     }
     @keyframes phoneVibrate {
@@ -368,6 +370,7 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     if (callShown || callInteractedWith) return;
     callShown = true;
     incomingCallPopup.classList.add('show');
+    incomingCallPopup.classList.add('vibrating');
     overlay.classList.add('show');
     
     // Pause all videos when ringtone plays
@@ -387,6 +390,9 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   function acceptCall() {
     ringtoneAudio.pause();
     ringtoneAudio.currentTime = 0;
+    
+    // Stop vibrating animation
+    incomingCallPopup.classList.remove('vibrating');
     
     funnyAudio.play().catch(err => {
       console.log('Audio playback failed:', err);
@@ -412,6 +418,12 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     ringtoneAudio.pause();
     ringtoneAudio.currentTime = 0;
     
+    // Stop funny audio if it's playing
+    funnyAudio.pause();
+    funnyAudio.currentTime = 0;
+    
+    // Stop vibrating animation and hide popup
+    incomingCallPopup.classList.remove('vibrating');
     incomingCallPopup.classList.remove('show');
     overlay.classList.remove('show');
     
