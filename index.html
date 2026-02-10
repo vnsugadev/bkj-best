@@ -403,9 +403,21 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   }
 
   // Track user activity
-  ['mousedown', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+  let lastScrollTime = 0;
+  const SCROLL_THROTTLE = 1000; // Only trigger once per second for scroll
+  
+  ['mousedown', 'keypress', 'touchstart', 'click'].forEach(event => {
     document.addEventListener(event, resetIdleTimer, true);
   });
+  
+  // Throttle scroll event to prevent excessive calls
+  document.addEventListener('scroll', () => {
+    const now = Date.now();
+    if (now - lastScrollTime > SCROLL_THROTTLE) {
+      lastScrollTime = now;
+      resetIdleTimer();
+    }
+  }, true);
 
   // Start the idle timer when page loads
   resetIdleTimer();
