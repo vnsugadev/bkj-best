@@ -53,6 +53,135 @@
     #overlay.show {
       display: block;
     }
+
+    /* Incoming Call Popup - 2008 Style */
+    #incomingCallPopup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      background: linear-gradient(180deg, #d0d0d0 0%, #909090 100%);
+      border: 3px solid #333;
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.3);
+      z-index: 10000;
+      font-family: Arial, sans-serif;
+    }
+    #incomingCallPopup.show {
+      display: block;
+      animation: phoneVibrate 0.5s infinite;
+    }
+    @keyframes phoneVibrate {
+      0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+      25% { transform: translate(-51%, -50%) rotate(-1deg); }
+      75% { transform: translate(-49%, -50%) rotate(1deg); }
+    }
+    .call-header {
+      background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+      padding: 8px;
+      text-align: center;
+      border-radius: 17px 17px 0 0;
+      border-bottom: 2px solid #555;
+    }
+    .call-signal {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .signal-bar {
+      display: inline-block;
+      width: 3px;
+      background: #00ff00;
+      margin-right: 1px;
+      border-radius: 1px;
+    }
+    .signal-bar:nth-child(1) { height: 4px; }
+    .signal-bar:nth-child(2) { height: 7px; }
+    .signal-bar:nth-child(3) { height: 10px; }
+    .signal-bar:nth-child(4) { height: 13px; }
+    .network-2g {
+      display: inline-block;
+      background: #000;
+      color: #00ff00;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid #00ff00;
+      border-radius: 3px;
+      margin-left: 5px;
+    }
+    .call-body {
+      padding: 25px 15px;
+      text-align: center;
+      background: linear-gradient(180deg, #f0f0f0 0%, #c0c0c0 100%);
+    }
+    .call-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: ringPulse 1s infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .call-text {
+      font-size: 14px;
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .call-number {
+      font-size: 18px;
+      color: #000;
+      font-weight: bold;
+      margin: 10px 0;
+      letter-spacing: 1px;
+    }
+    .call-status {
+      font-size: 12px;
+      color: #666;
+      font-style: italic;
+      margin-top: 5px;
+    }
+    .call-buttons {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      background: #808080;
+      border-radius: 0 0 17px 17px;
+    }
+    .call-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #333;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .call-button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .accept-button {
+      background: linear-gradient(180deg, #00ff00 0%, #00aa00 100%);
+    }
+    .decline-button {
+      background: linear-gradient(180deg, #ff0000 0%, #aa0000 100%);
+    }
+    .button-label {
+      font-size: 10px;
+      text-align: center;
+      color: #fff;
+      margin-top: 5px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
 </style>
 </head>
 
@@ -126,6 +255,43 @@
     <button onclick="closePopup()">Close</button>
   </div>
 
+  <!-- Incoming Call Popup -->
+  <div id="incomingCallPopup">
+    <div class="call-header">
+      <span class="call-signal">
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+      </span>
+      <span class="network-2g">2G</span>
+    </div>
+    <div class="call-body">
+      <div class="call-icon">📞</div>
+      <div class="call-text">Incoming Call</div>
+      <div class="call-number">+1-800-BALLMER</div>
+      <div class="call-status">Ringing...</div>
+    </div>
+    <div class="call-buttons">
+      <div style="text-align: center;">
+        <button class="call-button decline-button" onclick="declineCall()">✖</button>
+        <div class="button-label">Decline</div>
+      </div>
+      <div style="text-align: center;">
+        <button class="call-button accept-button" onclick="acceptCall()">✓</button>
+        <div class="button-label">Accept</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden audio elements for call functionality -->
+  <audio id="ringtoneAudio" loop>
+    <source src="ringtone.m4a" type="audio/mp4">
+  </audio>
+  <audio id="funnyAudio">
+    <source src="funny_audio.mp3" type="audio/mp3">
+  </audio>
+
 <hr style="border: none; border-top: 2px solid black; width: 100%;">
 
 <footer style="text-align: center; font-style: italic; padding: 1em;">
@@ -181,6 +347,71 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
         document.getElementById('gold-price').textContent = 'Error loading price';
         console.error(error);
       });
+
+  // Incoming Call Feature
+  let idleTimer;
+  let callShown = false;
+  const IDLE_TIME = 30000; // 30 seconds of idle time
+  const incomingCallPopup = document.getElementById('incomingCallPopup');
+  const ringtoneAudio = document.getElementById('ringtoneAudio');
+  const funnyAudio = document.getElementById('funnyAudio');
+
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    if (!callShown) {
+      idleTimer = setTimeout(showIncomingCall, IDLE_TIME);
+    }
+  }
+
+  function showIncomingCall() {
+    if (callShown) return;
+    callShown = true;
+    incomingCallPopup.classList.add('show');
+    overlay.classList.add('show');
+    
+    // Try to play ringtone (may be blocked by browser autoplay policy)
+    ringtoneAudio.play().catch(err => {
+      console.log('Autoplay blocked, user interaction needed:', err);
+    });
+  }
+
+  function acceptCall() {
+    ringtoneAudio.pause();
+    ringtoneAudio.currentTime = 0;
+    
+    funnyAudio.play().catch(err => {
+      console.log('Audio playback failed:', err);
+    });
+    
+    incomingCallPopup.classList.remove('show');
+    overlay.classList.remove('show');
+    
+    // Reset for next idle period
+    callShown = false;
+    resetIdleTimer();
+  }
+
+  function declineCall() {
+    ringtoneAudio.pause();
+    ringtoneAudio.currentTime = 0;
+    funnyAudio.pause();
+    funnyAudio.currentTime = 0;
+    
+    incomingCallPopup.classList.remove('show');
+    overlay.classList.remove('show');
+    
+    // Reset for next idle period
+    callShown = false;
+    resetIdleTimer();
+  }
+
+  // Track user activity
+  ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+    document.addEventListener(event, resetIdleTimer, true);
+  });
+
+  // Start the idle timer when page loads
+  resetIdleTimer();
 
 </script>
 
