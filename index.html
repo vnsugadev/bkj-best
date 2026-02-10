@@ -394,8 +394,6 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   function declineCall() {
     ringtoneAudio.pause();
     ringtoneAudio.currentTime = 0;
-    funnyAudio.pause();
-    funnyAudio.currentTime = 0;
     
     incomingCallPopup.classList.remove('show');
     overlay.classList.remove('show');
@@ -406,7 +404,7 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   }
 
   // Track user activity
-  ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+  ['mousedown', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
     document.addEventListener(event, resetIdleTimer, true);
   });
 
