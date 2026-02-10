@@ -351,6 +351,7 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   // Incoming Call Feature
   let idleTimer;
   let callShown = false;
+  let callInteractedWith = false; // Track if user has interacted with the call
   const IDLE_TIME = 30000; // 30 seconds of idle time
   const incomingCallPopup = document.getElementById('incomingCallPopup');
   const ringtoneAudio = document.getElementById('ringtoneAudio');
@@ -358,13 +359,13 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
 
   function resetIdleTimer() {
     clearTimeout(idleTimer);
-    if (!callShown) {
+    if (!callShown && !callInteractedWith) {
       idleTimer = setTimeout(showIncomingCall, IDLE_TIME);
     }
   }
 
   function showIncomingCall() {
-    if (callShown) return;
+    if (callShown || callInteractedWith) return;
     callShown = true;
     incomingCallPopup.classList.add('show');
     overlay.classList.add('show');
@@ -386,9 +387,8 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     incomingCallPopup.classList.remove('show');
     overlay.classList.remove('show');
     
-    // Reset for next idle period
-    callShown = false;
-    resetIdleTimer();
+    // Mark as interacted - don't show again this session
+    callInteractedWith = true;
   }
 
   function declineCall() {
@@ -398,9 +398,8 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     incomingCallPopup.classList.remove('show');
     overlay.classList.remove('show');
     
-    // Reset for next idle period
-    callShown = false;
-    resetIdleTimer();
+    // Mark as interacted - don't show again this session
+    callInteractedWith = true;
   }
 
   // Track user activity
