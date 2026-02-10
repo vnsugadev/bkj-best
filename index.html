@@ -370,6 +370,14 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     incomingCallPopup.classList.add('show');
     overlay.classList.add('show');
     
+    // Pause all videos when ringtone plays
+    if (!video.paused) {
+      video.pause();
+    }
+    if (!video1.paused) {
+      video1.pause();
+    }
+    
     // Try to play ringtone (may be blocked by browser autoplay policy)
     ringtoneAudio.play().catch(err => {
       console.log('Autoplay blocked, user interaction needed:', err);
@@ -384,8 +392,17 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
       console.log('Audio playback failed:', err);
     });
     
-    incomingCallPopup.classList.remove('show');
-    overlay.classList.remove('show');
+    // Hide accept button, keep popup and decline button visible
+    const acceptButtonContainer = document.querySelector('.call-buttons > div:nth-child(2)');
+    if (acceptButtonContainer) {
+      acceptButtonContainer.style.display = 'none';
+    }
+    
+    // Update call status to show call is in progress
+    const callStatus = document.querySelector('.call-status');
+    if (callStatus) {
+      callStatus.textContent = 'Call in progress...';
+    }
     
     // Mark as interacted - don't show again this session
     callInteractedWith = true;
