@@ -316,186 +316,98 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
 
   
 <script>
-  // Declare everything only once
-  const audio = document.getElementById('myAudio');
-  const video = document.getElementById('myVideo');
-  const video1 = document.getElementById('myVideo1');
-  const popup = document.getElementById('popup');
-  const overlay = document.getElementById('overlay');
+  const audio = document.getElementById('myAudio');
+  const video = document.getElementById('myVideo');
+  const video1 = document.getElementById('myVideo1');
+  const popup = document.getElementById('popup');
+  const overlay = document.getElementById('overlay');
+  const incomingCallPopup = document.getElementById('incomingCallPopup');
+  const ringtoneAudio = document.getElementById('ringtoneAudio');
+  const funnyAudio = document.getElementById('funnyAudio');
 
-  // Pause videos when audio plays
-  audio.addEventListener('play', function () {
-    if (!video.paused) {
-      video.pause();
-    }
-    if (!video1.paused) {
-      video1.pause();
-    }
-  });
+  // Pause videos when main audio plays
+  audio.addEventListener('play', () => { video.pause(); video1.pause(); });
+  // Show thank-you popup when story ends
+  audio.addEventListener('ended', () => { popup.classList.add('show'); overlay.classList.add('show'); });
+  function closePopup() { popup.classList.remove('show'); overlay.classList.remove('show'); }
 
-  // Show popup when audio ends
-  audio.addEventListener('ended', () => {
-    popup.classList.add('show');
-    overlay.classList.add('show');
-  });
+  // Gold price
+  fetch('https://api.gold-api.com/price/XAU')
+    .then(r => r.json())
+    .then(data => document.getElementById('gold-price').textContent = data.price)
+    .catch(() => document.getElementById('gold-price').textContent = 'Error loading price');
 
-  function closePopup() {
-    popup.classList.remove('show');
-    overlay.classList.remove('show');
-  }
+  // --- Incoming Call (NOW FIXED) ---
+  let idleTimer, missedCallTimer;
+  const IDLE_TIME = 30000; // 30s
+  let callShown = false;
+  let callInteracted = false;
 
-  fetch('https://api.gold-api.com/price/XAU')
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('gold-price').textContent = data.price;
-    })
-    .catch(error => {
-      document.getElementById('gold-price').textContent = 'Error loading price';
-      console.error(error);
-    });
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    if (!callShown && !callInteracted) {
+      idleTimer = setTimeout(showIncomingCall, IDLE_TIME);
+    }
+  }
 
-  // --- Incoming Call Feature Logic ---
-  let idleTimer;
-  let missedCallTimer; // NEW: Timer for the 40s timeout
-  let callShown = false;
-  let callInteractedWith = false; 
-  const IDLE_TIME = 30000; // 30 seconds of idle time
-  
-  const incomingCallPopup = document.getElementById('incomingCallPopup');
-  const ringtoneAudio = document.getElementById('ringtoneAudio');
-  const funnyAudio = document.getElementById('funnyAudio');
+  function showIncomingCall() {
+    if (callShown || callInteracted) return;
+    callShown = true;
+    incomingCallPopup.classList.add('show', 'vibrating');
+    overlay.classList.add('show');
+    video.pause(); video1.pause();
+    ringtoneAudio.play().catch(() => {});
+    missedCallTimer = setTimeout(handleMissedCall, 40000);
+  }
 
-  function resetIdleTimer() {
-    clearTimeout(idleTimer);
-    if (!callShown && !callInteractedWith) {
-      idleTimer = setTimeout(showIncomingCall, IDLE_TIME);
-    }
-  }
+  function handleMissedCall() {
+    document.querySelector('.call-status').textContent = 'Call Unaccepted';
+    ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
+    incomingCallPopup.classList.remove('vibrating');
+    callInteracted = true;
+    setTimeout(() => {
+      incomingCallPopup.classList.remove('show');
+      overlay.classList.remove('show');
+    }, 2000);
+  }
 
-  function showIncomingCall() {
-    if (callShown || callInteractedWith) return;
-    callShown = true;
-    incomingCallPopup.classList.add('show');
-    incomingCallPopup.classList.add('vibrating');
-    overlay.classList.add('show');
-    
-    // Pause videos when ringtone plays
-    if (!video.paused) video.pause();
-    if (!video1.paused) video1.pause();
-    
-    ringtoneAudio.play().catch(err => {
-      console.log('Autoplay blocked, user interaction needed:', err);
-    });
+  function acceptCall() {
+    clearTimeout(missedCallTimer);
+    ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
+    incomingCallPopup.classList.remove('vibrating');
+    funnyAudio.play().catch(() => {});
+    document.getElementById('acceptButtonContainer').style.display = 'none';
+    document.querySelector('.call-status').textContent = 'Call in progress...';
+    callInteracted = true;
+  }
 
-    // NEW: Start the 40-second countdown for "Call Unaccepted"
-    missedCallTimer = setTimeout(handleMissedCall, 40000);
-  }
+  function declineCall() {
+    clearTimeout(missedCallTimer);
+    ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
+    funnyAudio.pause();
+    incomingCallPopup.classList.remove('vibrating', 'show');
+    overlay.classList.remove('show');
+    callInteracted = true;
+  }
 
-  // NEW: Function to handle the timeout
-  function handleMissedCall() {
-    // 1. Change text
-    const callStatus = document.querySelector('.call-status');
-    if (callStatus) callStatus.textContent = "Call Unaccepted";
+  // Reset timer on any activity
+  ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(ev =>
+    document.addEventListener(ev, resetIdleTimer, true));
 
-    // 2. Stop Ringtone & Vibration
-    ringtoneAudio.pause();
-    ringtoneAudio.currentTime = 0;
-    incomingCallPopup.classList.remove('vibrating');
+  // Start the timer
+  resetIdleTimer();
 
-    // 3. Mark as done so it doesn't pop up again
-    callInteractedWith = true;
-
-    // 4. Wait 2 seconds so user sees the message, then close
-    setTimeout(() => {
-        incomingCallPopup.classList.remove('show');
-        overlay.classList.remove('show');
-    }, 2000);
-  }
-
-  function acceptCall() {
-    // Stop the missed call timer if they click accept
-    clearTimeout(missedCallTimer);
-
-    ringtoneAudio.pause();
-    ringtoneAudio.currentTime = 0;
-    
-    incomingCallPopup.classList.remove('vibrating');
-    
-    funnyAudio.play().catch(err => {
-      console.log('Audio playback failed:', err);
-    });
-    
-    const acceptButtonContainer = document.getElementById('acceptButtonContainer');
-    if (acceptButtonContainer) {
-      acceptButtonContainer.style.display = 'none';
-    }
-    
-    const callStatus = document.querySelector('.call-status');
-    if (callStatus) {
-      callStatus.textContent = 'Call in progress...';
-    }
-    
-    callInteractedWith = true;
-  }
-
-  function declineCall() {
-    // Stop the missed call timer if they click decline
-    clearTimeout(missedCallTimer);
-
-    ringtoneAudio.pause();
-    ringtoneAudio.currentTime = 0;
-    
-    funnyAudio.pause();
-    funnyAudio.currentTime = 0;
-    
-    incomingCallPopup.classList.remove('vibrating');
-    incomingCallPopup.classList.remove('show');
-    overlay.classList.remove('show');
-    
-    callInteractedWith = true;
-  }
-
-  // Track user activity
-  let lastScrollTime = 0;
-  const SCROLL_THROTTLE = 1000; 
-  
-  ['mousedown', 'keypress', 'touchstart', 'click'].forEach(event => {
-    document.addEventListener(event, resetIdleTimer, true);
-  });
-  
-  document.addEventListener('scroll', () => {
-    const now = Date.now();
-    if (now - lastScrollTime > SCROLL_THROTTLE) {
-      lastScrollTime = now;
-      resetIdleTimer();
-    }
-  }, true);
-
-  resetIdleTimer();
-
-  // --- Carrier Logo Logic (Geo-Location) ---
+  // Carrier logo (Etisalat for you!)
   fetch('https://ipapi.co/json/')
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
-      const logoImg = document.getElementById('carrier-logo');
-      
-      // Check if country code is CH (Switzerland)
-      if (data.country_code === 'CH') {
-        logoImg.src = 'swisscom.jpg';
-      } else {
-        // Default to Etisalat for UAE (AE) or literally anywhere else
-        logoImg.src = 'etisalat.jpg';
-      }
-      
-      // Reveal the image once it is assigned
-      logoImg.style.display = 'inline-block';
+      const logo = document.getElementById('carrier-logo');
+      logo.src = (data.country_code === 'CH') ? 'swisscom.jpg' : 'etisalat.jpg';
+      logo.style.display = 'inline-block';
     })
-    .catch(error => {
-      console.log('Could not detect location, defaulting to Etisalat');
-      const logoImg = document.getElementById('carrier-logo');
-      logoImg.src = 'etisalat.jpg';
-      logoImg.style.display = 'inline-block';
+    .catch(() => {
+      document.getElementById('carrier-logo').src = 'etisalat.jpg';
+      document.getElementById('carrier-logo').style.display = 'inline-block';
     });
 </script>
-
 </html>
