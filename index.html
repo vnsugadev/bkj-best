@@ -509,7 +509,7 @@
       </span>
 
       <span class="network-2g">2G</span>
-      <img src="swisscom.jpg" alt="description">
+      <img id="callerLogo" src="swisscom.jpg" alt="Caller logo">
 
     </div>
 
@@ -552,7 +552,7 @@
 
   <audio id="ringtoneAudio" loop>
 
-    <source src="ringtone.m4a" type="audio/mp4">
+    <source id="ringtoneSource" src="ringtone.m4a" type="audio/mp4">
 
   </audio>
 
@@ -680,8 +680,57 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   const incomingCallPopup = document.getElementById('incomingCallPopup');
 
   const ringtoneAudio = document.getElementById('ringtoneAudio');
+  const ringtoneSource = document.getElementById('ringtoneSource');
+  const callerLogo = document.getElementById('callerLogo');
+  const callNumber = document.querySelector('.call-number');
+  const callStatus = document.querySelector('.call-status');
 
   const funnyAudio = document.getElementById('funnyAudio');
+
+
+  function triggerCall(callerType) {
+    let callerConfig;
+    if (callerType === 'other') {
+      callerConfig = {
+        logo: 'oles.jpg',
+        logoAlt: 'Other caller logo',
+        number: '+44-20-1234-5678',
+        ringtone: 'oles_dave_ballmer.m4a'
+      };
+    } else {
+      callerConfig = {
+        logo: 'swisscom.jpg',
+        logoAlt: 'Swisscom caller logo',
+        number: '+1-800-OLES',
+        ringtone: 'ringtone.m4a'
+      };
+    }
+
+    callerLogo.src = callerConfig.logo;
+    callerLogo.alt = callerConfig.logoAlt;
+    callNumber.textContent = callerConfig.number;
+    callStatus.textContent = 'Ringing...';
+
+    const acceptButtonContainer = document.getElementById('acceptButtonContainer');
+    if (acceptButtonContainer) {
+      acceptButtonContainer.style.display = 'block';
+    }
+
+    incomingCallPopup.classList.add('show');
+    incomingCallPopup.classList.add('vibrating');
+    overlay.classList.add('show');
+
+    if (!video.paused) video.pause();
+    if (!video1.paused) video1.pause();
+
+    ringtoneAudio.pause();
+    ringtoneAudio.currentTime = 0;
+    ringtoneSource.src = callerConfig.ringtone;
+    ringtoneAudio.load();
+    ringtoneAudio.play().catch(err => {
+      console.log('Autoplay blocked, user interaction needed:', err);
+    });
+  }
 
 
   function resetIdleTimer() {
@@ -702,28 +751,8 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     if (callShown || callInteractedWith) return;
 
     callShown = true;
-
-    incomingCallPopup.classList.add('show');
-
-    incomingCallPopup.classList.add('vibrating');
-
-    overlay.classList.add('show');
-
-    
-
-    // Pause videos when ringtone plays
-
-    if (!video.paused) video.pause();
-
-    if (!video1.paused) video1.pause();
-
-    
-
-    ringtoneAudio.play().catch(err => {
-
-      console.log('Autoplay blocked, user interaction needed:', err);
-
-    });
+    const callerType = Math.random() < 0.5 ? 'swisscom' : 'other';
+    triggerCall(callerType);
 
 
     // NEW: Start the 40-second countdown for "Call Unaccepted"
@@ -738,8 +767,6 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   function handleMissedCall() {
 
     // 1. Change text
-
-    const callStatus = document.querySelector('.call-status');
 
     if (callStatus) callStatus.textContent = "Call Unaccepted";
 
@@ -805,8 +832,6 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     }
 
     
-
-    const callStatus = document.querySelector('.call-status');
 
     if (callStatus) {
 
