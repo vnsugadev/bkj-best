@@ -688,6 +688,21 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   const funnyAudio = document.getElementById('funnyAudio');
 
 
+
+  async function getRegionCode() {
+    try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+
+        return data.country_code === "CH" ? "CH" : "Other";
+    } catch (err) {
+        return "Other";
+    }
+}
+
+
+
+
   function triggerCall(callerType) {
     let callerConfig;
     if (callerType === 'other') {
@@ -746,20 +761,22 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   }
 
 
-  function showIncomingCall() {
+async function showIncomingCall() {
 
     if (callShown || callInteractedWith) return;
 
     callShown = true;
-    const callerType = Math.random() < 0.5 ? 'swisscom' : 'other';
+
+    const region = await getRegionCode();
+
+    // If Switzerland -> swisscom
+    // Everything else -> other
+    const callerType = region === "CH" ? "swisscom" : "other";
+
     triggerCall(callerType);
 
-
-    // NEW: Start the 40-second countdown for "Call Unaccepted"
-
     missedCallTimer = setTimeout(handleMissedCall, 40000);
-
-  }
+}
 
 
   // NEW: Function to handle the timeout
