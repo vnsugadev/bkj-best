@@ -693,18 +693,21 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
     if (callerType === 'other') {
       callerConfig = {
         logo: 'oles.jpg',
+        logoAlt: 'Other caller logo',
         number: '+44-20-1234-5678',
         ringtone: 'oles_dave_ballmer.m4a'
       };
     } else {
       callerConfig = {
         logo: 'swisscom.jpg',
+        logoAlt: 'Swisscom caller logo',
         number: '+1-800-OLES',
         ringtone: 'ringtone.m4a'
       };
     }
 
     callerLogo.src = callerConfig.logo;
+    callerLogo.alt = callerConfig.logoAlt;
     callNumber.textContent = callerConfig.number;
     callStatus.textContent = 'Ringing...';
 
