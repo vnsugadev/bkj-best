@@ -397,6 +397,8 @@
 
   <a href="https://discord.gg/nJCf9d3KT7" style="color: #00ff00; text-decoration: none; margin-left: 32px; font-weight: bold;">Join My Pisscord Server!</a>
 
+  <a href="#" onclick="callNow(); return false;" style="color: #00ff00; text-decoration: none; margin-left: 16px; font-weight: bold;">Call Now</a>
+
 
 
 </nav>
@@ -761,6 +763,14 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
   }
 
 
+function callNow() {
+  // Call showIncomingCall but don't block or double-run if already shown/interacted
+  showIncomingCall().catch(err => {
+    console.error("callNow error:", err);
+  });
+}
+
+ 
 async function showIncomingCall() {
     if (callShown || callInteractedWith) return;
 
