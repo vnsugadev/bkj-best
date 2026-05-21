@@ -762,7 +762,6 @@ For optimal viewing experience, this page is best rendered on Internet Explorer 
 
 
 async function showIncomingCall() {
-
     if (callShown || callInteractedWith) return;
 
     callShown = true;
@@ -775,8 +774,10 @@ async function showIncomingCall() {
 
     triggerCall(callerType);
 
-    missedCallTimer = setTimeout(handleMissedCall, 40000);
+    const timeoutMs = region === "CH" ? 40000 : 50000;
+    missedCallTimer = setTimeout(handleMissedCall, timeoutMs);
 }
+
 
 
   // NEW: Function to handle the timeout
